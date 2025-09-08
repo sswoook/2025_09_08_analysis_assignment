@@ -1,0 +1,2 @@
+# 2025_09_08_analysis_assignment
+Bespin_global Python Analysis Assignment
