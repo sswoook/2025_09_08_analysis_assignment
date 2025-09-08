@@ -82,14 +82,20 @@ if '스톡옵션정도' in df.columns:
     stock_option_pivot['퇴직율(%)'] = (stock_option_pivot.get(1, 0) / stock_option_pivot.sum(axis=1)) * 100
     
     # 시각화
-    st.subheader("스톡옵션정도별 퇴직율")
-    fig2, ax2 = plt.subplots(figsize=(7.5, 3.8))
-    sns.barplot(x=stock_option_pivot.index, y=stock_option_pivot['퇴직율(%)'], ax=ax2)
-    ax2.set_xlabel("스톡옵션정도")
-    ax2.set_ylabel("퇴직율(%)")
-    ax2.bar_label(ax2.containers[0], fmt="%.1f")
-    plt.xticks(rotation=0)
-    st.pyplot(fig2)
+    fig, ax = plt.subplots(figsize=(7.5, 3.8))
+    colors = sns.color_palette("coolwarm", len(stock_option_pivot))
+
+    ax.plot(stock_option_pivot.index, stock_option_pivot['퇴직율(%)'], marker='o', linestyle='-', linewidth=2, markersize=8, color=colors[2])
+    for i, val in enumerate(stock_option_pivot['퇴직율(%)']):
+        ax.text(i, val + 0.3, f"{val:.1f}%", ha='center', va='bottom', fontsize=10, color=colors[2])
+
+    ax.set_xlabel("스톡옵션정도")
+    ax.set_ylabel("퇴직율(%)")
+    ax.set_title("스톡옵션정도별 퇴직율 (선 그래프)")
+    ax.grid(True, linestyle='--', alpha=0.7)
+
+plt.xticks(rotation=0)
+st.pyplot(fig)
 
 col1, col2 = st.columns(2)
 
@@ -99,12 +105,23 @@ if "급여증가분백분율" in df.columns:
     tmp["인상률(%)"] = tmp["급여증가분백분율"].round().astype(int)
     sal = tmp.groupby("인상률(%)")["퇴직"].mean()*100
     with col1:
-        st.subheader("💰 급여인상율과 퇴직율")
-        fig2, ax2 = plt.subplots(figsize=(6.5,3.5))
-        sns.lineplot(x=sal.index, y=sal.values, marker="o", ax=ax2)
-        ax2.set_xlabel("급여인상율(%)"); 
-        ax2.set_ylabel("퇴직율(%)")
-        st.pyplot(fig2)
+        st.subheader(":up: 급여인상률별 퇴직율")
+        fig, ax = plt.subplots(figsize=(6.5, 3.5))
+
+        ax.plot(sal.index, sal.values, marker='o', linestyle='-', linewidth=2, markersize=8, color='mediumseagreen')
+        ax.fill_between(sal.index, 0, sal.values, color='mediumseagreen', alpha=0.3)
+
+        for i, val in enumerate(sal.values):
+            ax.text(sal.index[i], val + 0.2, f"{val:.1f}%", ha='center', va='bottom', fontsize=9, color='mediumseagreen')
+
+        ax.set_xlabel("급여인상율(%)")
+        ax.set_ylabel("퇴직율(%)")
+        ax.set_title("급여인상율과 퇴직율 (영역 강조 선 그래프)")
+        ax.grid(True, linestyle='--', alpha=0.6)
+
+        plt.xticks(rotation=0)
+        st.pyplot(fig)
+
 
 # (우) 야근정도별 퇴직율 (Yes/No 막대)
 col_name = "야근정도"
@@ -117,4 +134,3 @@ if col_name in df.columns:
         ax3.set_ylabel("퇴직율(%)"); 
         ax3.bar_label(ax3.containers[0], fmt="%.1f")
         st.pyplot(fig3)
-
