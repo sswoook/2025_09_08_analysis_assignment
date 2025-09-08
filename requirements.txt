@@ -57,7 +57,7 @@ MarkupSafe==3.0.2
 matplotlib==3.10.5
 matplotlib-inline==0.1.6
 mdurl==0.1.0
-menuinst==2.3.0
+# menuinst==2.3.0
 narwhals==1.31.0
 nest_asyncio==1.6.0
 numexpr==2.11.0
